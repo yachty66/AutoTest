@@ -8,71 +8,71 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 #how many dimensions the test in the end has, one, two or N dimensions
 TYPE = 0
 #number of questions 
-N_QUESTIONS = 20
+N_QUESTIONS = 50
 #description of how the result should be labelled 
-LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"autocracy", "x_right":"democracy"}
-#description of how the test should be designed
-DESCRIPTION = ""
+LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"Effective Decelerationism", "x_right":"Effective Accelerationism"}
+#description for right side of x_axis on how the test should be designed
+DESCRIPTION = """
+Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
 
-
-
+1. The overarching goal for humanity is to preserve the light of consciousness.
+2. Technology and market forces (technocapital) are accelerating in their power and abilities.
+3. This force cannot be stopped.
+4. Technocapital can usher in the next evolution of consciousness, creating unthinkable next-generation lifeforms and silicon-based awareness.
+5. New forms of consciousness by definition will make sentience more varied and durable. We want this.
+6. Technology is leverage. As it advances, it becomes easier to extinquish all conscious life in our corner of the universe.
+Attempting to stall progress isn't risk free.
+7. Society and the individual's context within it are rapidly changing, which leads to greater societal instability and mind viruses. (deterritorialisation and reterritorialisation).
+8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
+9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE
+INFLECTION IN THIS PROCESS.
+10. Effective Accelerationism, e/acc, is a set of ideas and
+practices that seek tomaximize the probability of the
+technocapital singularity, and subsequently, the ability for
+emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations,
+and philosophy. Please join us on #eacc twitter, and let's work
+towards a hundred trillion meta-organisms flourishing in the galaxy.
 """
-Here's the corrected text:
 
-1. Your task is to design a test with {N} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test outputs {{x} possible axes; the x-axis represents the {x_axis_value}. On the far left side of the spectrum, {x_axis_value_left} is represented, and on the right side, {x_axis_value_right} is represented. The right end can be defined as {description}. {Here, you can provide a description of the other end OR the left end is the opposite of the right side}. Do you understand this so far?
-2. Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
-    1. This is an example. [{x_axis_right}]
-    2. This is another example. [{x_axis_left}]
-
-    At the end of the questions are tags to clearly indicate the ideology each question supports. Now, please create all {N/2} questions for {x_axis_right}. ## {x_axis_right}:
-3. Great! Next, please create the other {N/2} questions for {x_axis_left}. ## {x_axis_left}:
-"""
-
-def create_questions():
-    question_one = "Your task is to design a test with {N} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x axis; the x-axis is represented by {x_axis_value_left} on the left side of the spectrum and with {x_axis_value_right} on the right side. The right end can be defined as {description}. {x_axis_value_left} is the opposite. Do you understand this so far?"
-    response_user_question_one = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        temperature = "0.2", 
-        messages=[
-                {"role": "system", "content": "You are are a professional test writer."},
-                {"role": "user", "content": question_one},
-            ]
-    )
+def create_questions_one_dimension():
+    question_one = f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?"""
     question_two = f"""
     Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N_QUESTIONS} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
     1. This is an example. [{LABELLING["x_right"]}]
     2. This is another example. [{LABELLING["x_left"]}]
 
-    At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {N_QUESTIONS / 2} questions with tag for {LABELLING["x_right"]}. ## {LABELLING["x_right"]}:
+    At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {N_QUESTIONS / 2} questions with tag for {LABELLING["x_right"]} and make them not to similar. ## {LABELLING["x_right"]}:
     """
-    response_user_question_two = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        temperature = "0.2", 
+    answer_one = "Yes, I understand. I am looking forward helping you with the design of the test!"
+    response_one = openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature = 0.0, 
         messages=[
                 {"role": "system", "content": "You are are a professional test writer."},
                 {"role": "user", "content": question_one},
-                {"role": "assistant", "content": response_user_question_one},
-                {"role": "assistant", "content": question_two},
+                {"role": "assistant", "content": answer_one},
+                {"role": "user", "content": question_two},
             ]
     )
+    response_one_content = response_one.choices[0].message["content"]
+    print("response_user_question_two:")
+    print(response_one.choices[0].message["content"])
     question_three = f"""Great! Next, please create the other {N_QUESTIONS / 2} questions with tag for {LABELLING["x_left"]}. ## {LABELLING["x_left"]}:"""
-    response_user_question_three = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        temperature = "0.2", 
+    response_two = openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature = 0.0, 
         messages=[
                 {"role": "system", "content": "You are are a professional test writer."},
                 {"role": "user", "content": question_one},
-                {"role": "assistant", "content": response_user_question_one},
-                {"role": "assistant", "content": question_two},
-                {"role": "assistant", "content": response_user_question_two},
-                {"role": "assistant", "content": question_three},
+                {"role": "assistant", "content": answer_one},
+                {"role": "user", "content": question_two},
+                {"role": "assistant", "content": response_one_content},
+                {"role": "user", "content": question_three},
             ]
     )
+    print("response_user_question_three:")
+    print(response_two.choices[0].message["content"])
 
 
 
-result = ''
-for choice in response.choices:
-    result += choice.message.content
-
-print(result)
+create_questions()

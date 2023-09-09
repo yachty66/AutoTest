@@ -1,21 +1,21 @@
 # AutoTest
 
-
 - [ ] design for box with question and checkboxes
     - make only one box checkable - 
-    - give whole box a appropriate max width and center radios
-    - set question appropriately
-    - make a attractive submit button
+    - give whole box a appropriate max width and center radios - 
+    - set question appropriately - 
+    - make a attractive submit button - 
     - throw an error if submit button is clicked but somewhere a checkmark is missing 
 - [ ] add title, description and disclaimer
 - [ ] one dim plot
 - [ ] make convenient CLI for launching a test
-
 - [ ] create website where tests from github code are getting released
 - [ ] create launch video with sick ass demo software 
 - [ ] support two dimensional test
 
 
+
+whatdfi 
 
 
 i want to create a test for an ideology e/acc (Effective Accelerationism). the idealogy can be defined as following:

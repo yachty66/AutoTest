@@ -1,23 +1,20 @@
 import gradio as gr
 
-"""def greet(name):
-    return "Hello " + name + "!"
+def greet(input_one, input_two):
+    # Check if all questions have been answered
+    if input_one is None or input_two is None:
+        raise gr.Error("Cannot divide by zero!")
+        #return "Error: Please answer all questions."
+    
 
-with gr.Blocks() as demo:
-    input_block = gr.inputs.CheckboxGroup(choices=["USA", "Japan", "Pakistan"])
-    demo.add(input_block)
-
-demo.launch()"""
-def greet(name):
-    #here i am going to do calcs later 
-    return "Hello " + name + "!"
 
 with gr.Blocks() as demo:
     #need to set a different label here
-    #input_block = gr.inputs.CheckboxGroup(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
-    input_block = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+    question = "Some based question"
+    input_block_one = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
+    input_block_two = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
     output = gr.Textbox(label="This is going to be the plot later")
-    greet_btn = gr.Button("Greet")
-    greet_btn.click(fn=greet, inputs=input_block, outputs=output, api_name="Submit")
+    greet_btn = gr.Button("Submit")
+    greet_btn.click(fn=greet, inputs=[input_block_one, input_block_two], outputs=output, api_name="Submit")
 
 demo.launch()

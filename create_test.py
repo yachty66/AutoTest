@@ -3,6 +3,11 @@ import os
 from requests import head
 import openai
 from dotenv import load_dotenv
+import re
+import gradio as gr
+from random import shuffle
+import matplotlib.pyplot as plt
+import numpy as np
 
 load_dotenv()
 
@@ -11,9 +16,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 #how many dimensions the test in the end has, one, two or N dimensions
 TYPE = 0
 #number of questions 
-N_QUESTIONS = 50
+N_QUESTIONS = 2
 #description of how the result should be labelled 
 LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"Effective Decelerationism", "x_right":"Effective Accelerationism"}
+INPUT_INFO = []
 #description for right side of x_axis on how the test should be designed
 DESCRIPTION = """
 Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
@@ -111,38 +117,106 @@ def create_test_one_dimension():
     description = response_four.choices[0].message["content"]
     return response_one.choices[0].message["content"], response_two.choices[0].message["content"], title, description
 
-
-
 #create_questions_one_dimension()
-
 #above should have created questions
 #need to parse them 
-def parse_questions():
-    #sample looks like:
-    #1. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
-    #11. I am of the opinion that the acceleration of market forces could lead to greater inequality. [Effective Decelerationism]
-    pass
+def parse_questions(string):
+    lines = string.strip().split("\n")
+    questions = []
+    for line in lines:
+        match = re.match(r"^\d+\.\s+(.*)\s+\[(.*)\]$", line)
+        if match:
+            question, tag = match.groups()
+            questions.append({question: tag})
+    return questions
+
+def validate_form(*inputs):
+    global input_info
+    print("inputs in validate form:")
+    print(inputs)    
+    #calculate the score 
+    x_right = 0
+    x_left = 0
+    final = 0
+    for i in range(len(inputs)):        
+        checkbox = inputs[i]
+        tag = INPUT_INFO[i]["tag"]
+        #convert checkbox into number based on LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"Effective Decelerationism", "x_right":"Effective Accelerationism"}
+        key = [k for k, v in LABELLING.items() if v == tag][0]
+        if key == "x_right":
+            if checkbox == "Strongly Agree":
+                x_right += 2
+            elif checkbox == "Agree":
+                x_right += 1
+            elif checkbox == "Neutral":
+                x_right += 0
+            elif checkbox == "Disagree":
+                x_right -= 1
+            elif checkbox == "Strongly Disagree":
+                x_right -= 2
+        else:
+            if checkbox == "Strongly Agree":
+                x_left += 2
+            elif checkbox == "Agree":
+                x_left += 1
+            elif checkbox == "Neutral":
+                x_left += 0
+            elif checkbox == "Disagree":
+                x_left -= 1
+            elif checkbox == "Strongly Disagree":
+                x_left -= 2
+        final = x_right + x_left
+        if checkbox is None:
+            raise gr.Error("Cannot divide by zero!")
+    fig, ax = plt.subplots()
+    ax.hlines(1, -10, 10, linestyles='solid')
+    ax.plot(final, 1, 'ro')
+    ax.set_xticks([-10, 0, 10])
+    ax.set_xticklabels([LABELLING["x_left"], 'Neutral', LABELLING["x_right"]])
+    ax.get_yaxis().set_visible(False)
+    return plt
 
 #create the gradio best on questions 
-def create_gradio(headline, description, questions):
-    headline = headline
+def create_gradio(title, description, questions, questions_x_left_formatted, questions_x_right_formatted):
+    global INPUT_INFO
+    title = title 
     description = description
     disclaimer = "Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk."
-    questions = questions
+    combined_questions = questions_x_left_formatted + questions_x_right_formatted
+    shuffle(combined_questions)
+    #create items inside the block where with respective weighting        
+    with gr.Blocks() as demo:
+        title = gr.Markdown("# This is the title of my application")
+        description = gr.Markdown("This is a description of my application")
+        disclaimer = gr.Markdown("**Disclaimer: This is a disclaimer for my application**")
+        inputs = []
+        for i in combined_questions:
+            question = list(i.keys())[0]
+            tag = list(i.values())[0]
+            checkbox = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
+            inputs.append(checkbox)
+            input_dict = {"question": question, "tag": tag}
+            INPUT_INFO.append(input_dict)            
+        output = gr.Textbox(label="This is going to be the plot later")
+        greet_btn = gr.Button("Submit")
+        print("inputs:")
+        print(inputs)
+        plot = gr.Plot(label="Plot")
+        greet_btn.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
+        demo.launch()
 
-    #the idea is to create a gradio. the gradio should contain a short description of what 
+def deploy_gradio():
+    pass
 
 def main():
     #depending on which option is given here the test creates 
-
-
-
     # Call the function to create test one dimension
     questions_x_right, questions_x_left, title, description = create_test_one_dimension()
+    questions_x_right_formatted = parse_questions(questions_x_right)
+    questions_x_left_formatted = parse_questions(questions_x_left)
     # Parse the questions
-    parse_questions()
-    # Create the gradio
-    create_gradio()
+    # Create the gradio 
+    create_gradio(title, description, questions_x_right_formatted, questions_x_right_formatted, questions_x_left_formatted)
 
 if __name__ == "__main__":
     main()

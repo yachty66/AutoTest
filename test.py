@@ -6,9 +6,10 @@ def greet(input_one, input_two):
         raise gr.Error("Cannot divide by zero!")
         #return "Error: Please answer all questions."
     
-
-
 with gr.Blocks() as demo:
+    title = gr.Markdown("# This is the title of my application")
+    description = gr.Markdown("This is a description of my application")
+    disclaimer = gr.Markdown("**Disclaimer: This is a disclaimer for my application**")
     #need to set a different label here
     question = "Some based question"
     input_block_one = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)

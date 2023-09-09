@@ -5,14 +5,22 @@
     - give whole box a appropriate max width and center radios - 
     - set question appropriately - 
     - make a attractive submit button - 
-    - throw an error if submit button is clicked but somewhere a checkmark is missing 
-- [ ] add title, description and disclaimer
+    - throw an error if submit button is clicked but somewhere a checkmark is missing - 
+- [x] add title, description and disclaimery
 - [ ] one dim plot
 - [ ] make convenient CLI for launching a test
 - [ ] create website where tests from github code are getting released
 - [ ] create launch video with sick ass demo software 
 - [ ] support two dimensional test
 
+
+1. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+2. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+3. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+4. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+5. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+
+hey. in this life everything is god´
 
 
 whatdfi 

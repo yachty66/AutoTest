@@ -1,23 +1,23 @@
-DESCRIPTION = """
-Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
+import gradio as gr
 
-1. The overarching goal for humanity is to preserve the light of consciousness.
-2. Technology and market forces (technocapital) are accelerating in their power and abilities.
-3. This force cannot be stopped.
-4. Technocapital can usher in the next evolution of consciousness, creating unthinkable next-generation lifeforms and silicon-based awareness.
-5. New forms of consciousness by definition will make sentience more varied and durable. We want this.
-6. Technology is leverage. As it advances, it becomes easier to extinquish all conscious life in our corner of the universe.
-Attempting to stall progress isn't risk free.
-7. Society and the individual's context within it are rapidly changing, which leads to greater societal instability and mind viruses. (deterritorialisation and reterritorialisation).
-8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
-9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE
-INFLECTION IN THIS PROCESS.
-10. Effective Accelerationism, e/acc, is a set of ideas and
-practices that seek tomaximize the probability of the
-technocapital singularity, and subsequently, the ability for
-emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations,
-and philosophy. Please join us on #eacc twitter, and let's work
-towards a hundred trillion meta-organisms flourishing in the galaxy.
-"""
+"""def greet(name):
+    return "Hello " + name + "!"
 
-print(DESCRIPTION)
+with gr.Blocks() as demo:
+    input_block = gr.inputs.CheckboxGroup(choices=["USA", "Japan", "Pakistan"])
+    demo.add(input_block)
+
+demo.launch()"""
+def greet(name):
+    #here i am going to do calcs later 
+    return "Hello " + name + "!"
+
+with gr.Blocks() as demo:
+    #need to set a different label here
+    #input_block = gr.inputs.CheckboxGroup(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+    input_block = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+    output = gr.Textbox(label="This is going to be the plot later")
+    greet_btn = gr.Button("Greet")
+    greet_btn.click(fn=greet, inputs=input_block, outputs=output, api_name="Submit")
+
+demo.launch()

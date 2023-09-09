@@ -1,10 +1,13 @@
 import os
+
+from requests import head
 import openai
 from dotenv import load_dotenv
 
 load_dotenv()
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
 #how many dimensions the test in the end has, one, two or N dimensions
 TYPE = 0
 #number of questions 
@@ -34,7 +37,7 @@ and philosophy. Please join us on #eacc twitter, and let's work
 towards a hundred trillion meta-organisms flourishing in the galaxy.
 """
 
-def create_questions_one_dimension():
+def create_test_one_dimension():
     question_one = f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?"""
     question_two = f"""
     Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N_QUESTIONS} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
@@ -55,8 +58,6 @@ def create_questions_one_dimension():
             ]
     )
     response_one_content = response_one.choices[0].message["content"]
-    print("response_user_question_two:")
-    print(response_one.choices[0].message["content"])
     question_three = f"""Great! Next, please create the other {N_QUESTIONS / 2} questions with tag for {LABELLING["x_left"]}. ## {LABELLING["x_left"]}:"""
     response_two = openai.ChatCompletion.create(
         model="gpt-4",
@@ -70,9 +71,78 @@ def create_questions_one_dimension():
                 {"role": "user", "content": question_three},
             ]
     )
-    print("response_user_question_three:")
-    print(response_two.choices[0].message["content"])
+    #get title for test
+    response_two_content = response_one.choices[0].message["content"]
+    question_four = f"""Great! Next, please create a short appropriate title for the test."""
+    response_three = openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature = 0.0, 
+        messages=[
+                {"role": "system", "content": "You are are a professional test writer."},
+                {"role": "user", "content": question_one},
+                {"role": "assistant", "content": answer_one},
+                {"role": "user", "content": question_two},
+                {"role": "assistant", "content": response_one_content},
+                {"role": "user", "content": question_three},
+                {"role": "assistant", "content": response_two_content},
+                {"role": "user", "content": question_four},
+            ]
+    )
+    title = response_three.choices[0].message["content"]
+
+    #get description for the test
+    question_five = f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
+    response_four = openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature = 0.0, 
+        messages=[
+                {"role": "system", "content": "You are are a professional test writer."},
+                {"role": "user", "content": question_one},
+                {"role": "assistant", "content": answer_one},
+                {"role": "user", "content": question_two},
+                {"role": "assistant", "content": response_one_content},
+                {"role": "user", "content": question_three},
+                {"role": "assistant", "content": response_two_content},
+                {"role": "user", "content": question_four},
+                {"role": "assistant", "content": title},
+                {"role": "user", "content": question_five},
+            ]
+    )
+    description = response_four.choices[0].message["content"]
+    return response_one.choices[0].message["content"], response_two.choices[0].message["content"], title, description
 
 
 
-create_questions()
+#create_questions_one_dimension()
+
+#above should have created questions
+#need to parse them 
+def parse_questions():
+    #sample looks like:
+    #1. I believe that the advancement of technology is inevitable and unstoppable. [Effective Accelerationism]
+    #11. I am of the opinion that the acceleration of market forces could lead to greater inequality. [Effective Decelerationism]
+    pass
+
+#create the gradio best on questions 
+def create_gradio(headline, description, questions):
+    headline = headline
+    description = description
+    disclaimer = "Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk."
+    questions = questions
+
+    #the idea is to create a gradio. the gradio should contain a short description of what 
+
+def main():
+    #depending on which option is given here the test creates 
+
+
+
+    # Call the function to create test one dimension
+    questions_x_right, questions_x_left, title, description = create_test_one_dimension()
+    # Parse the questions
+    parse_questions()
+    # Create the gradio
+    create_gradio()
+
+if __name__ == "__main__":
+    main()

@@ -16,7 +16,7 @@ sdk_version: 3.43.2
 - [x] one dim plot
 - [x] set title etc
 - [x] deploy the gradio
-- [ ] make convenient CLI for launching a test
+- [x] make convenient CLI for launching a test
 - [ ] clean code up so that everything makes sense and people can understand code
 - [ ] create website where tests from github code are getting released
 - [ ] create launch video with sick ass demo software 

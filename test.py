@@ -25,6 +25,15 @@ combined_questions = [1,2,3,4,5]
 shuffle(combined_questions)
 
 print(combined_questions)"""
-import os
 
-os.system("do something")    
+DESCRIPTION = """hello"""
+
+def main():
+    global DESCRIPTION
+    DESCRIPTION = "dude"
+   
+
+if __name__ == "__main__":
+    main()
+    print(DESCRIPTION)
+

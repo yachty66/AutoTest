@@ -9,40 +9,16 @@ from random import shuffle
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+import yaml
 
 load_dotenv()
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-#how many dimensions the test in the end has, one, two or N dimensions
-TYPE = 0
-#number of questions 
-N_QUESTIONS = 2
-#description of how the result should be labelled 
-LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"Effective Decelerationism", "x_right":"Effective Accelerationism"}
+N_QUESTIONS = 0
+LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
-#description for right side of x_axis on how the test should be designed
-DESCRIPTION = """
-Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
-
-1. The overarching goal for humanity is to preserve the light of consciousness.
-2. Technology and market forces (technocapital) are accelerating in their power and abilities.
-3. This force cannot be stopped.
-4. Technocapital can usher in the next evolution of consciousness, creating unthinkable next-generation lifeforms and silicon-based awareness.
-5. New forms of consciousness by definition will make sentience more varied and durable. We want this.
-6. Technology is leverage. As it advances, it becomes easier to extinquish all conscious life in our corner of the universe.
-Attempting to stall progress isn't risk free.
-7. Society and the individual's context within it are rapidly changing, which leads to greater societal instability and mind viruses. (deterritorialisation and reterritorialisation).
-8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
-9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE
-INFLECTION IN THIS PROCESS.
-10. Effective Accelerationism, e/acc, is a set of ideas and
-practices that seek tomaximize the probability of the
-technocapital singularity, and subsequently, the ability for
-emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations,
-and philosophy. Please join us on #eacc twitter, and let's work
-towards a hundred trillion meta-organisms flourishing in the galaxy.
-"""
+DESCRIPTION = ""
 
 def create_test_one_dimension():
     question_one = f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?"""
@@ -204,57 +180,25 @@ def create_gradio(title, description, questions, questions_x_left_formatted, que
         greet_btn.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
         demo.launch()
 
-def deploy_gradio():
+def deploy_gradio(name):
     os.system("gradio deploy")    
 
-def cli():
-    """
-    assistant: hey. you are here to let AI create an test for you! i highly encourage you to first read the readme so that you are getting the most out of creating your test. if you havent, head over to [this](link) page. first you need to define say how many dimensions your test will have:
-
-    [one dimension]
-    [two dimensions]
-    [N dimension]
-
-    user: two dimensions
-
-    assistant: this functionality is not implemented yet but stay tuned for future updates 
-
-    user: one dimension
-
-    assistant: great choice! next Label the ends of your x-axis with the corresponding names of the spectra you want to test for.
-
-    [x_left]
-
-    user: Effective Decelerationism
-
-    assistant: [x_right]
-
-    user: Effective Accelerationism
-
-    assistant: great! in the next step please describe your test. based on this description questions for the test are generated. again, if you havent read the [readme](link) so far, now you should to not mess up the description!:
-
-    user: description
-
-    assistant: Well! almost done! in the last step you need to define of how many questions your test exists of. the number can range between 10 and 50:
-
-    user: 54
-
-    assistant: number to high, please repeat:
-
-    user: 2
-
-    assistant: number to low, please repeat:
-
-    user: 12
-
-    assistant: okay. your test is getting deployed. once deployment is complete a link with your test is shared to you. wait a bit.
-
-    🎉link     
-    """
-    pass
-
 def main():
-    #depending on which option is given here the test creates 
+    global DESCRIPTION
+    global LABELLING
+    global N_QUESTIONS
+    with open('auto_test_config.yaml') as f:
+        args = yaml.safe_load(f)
+    if args['dimensions'] == 2 or args['dimensions'] == 3:
+        print("This functionality is not implemented yet but stay tuned for future updates")
+        return
+    if not 1 <= args['num_questions'] <= 50:
+        print("Number of questions must be between 10 and 50")
+        return
+    DESCRIPTION = args['description']
+    LABELLING["x_left"] = args['x_left']
+    LABELLING["x_right"] = args['x_right']
+    N_QUESTIONS = args['num_questions']
     # Call the function to create test one dimension
     questions_x_right, questions_x_left, title, description = create_test_one_dimension()
     questions_x_right_formatted = parse_questions(questions_x_right)
@@ -262,6 +206,7 @@ def main():
     # Parse the questions
     # Create the gradio 
     create_gradio(title, description, questions_x_right_formatted, questions_x_right_formatted, questions_x_left_formatted)
+    #deploy_gradio("gradio deploy")
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,4 @@
 import os
-
 from requests import head
 import openai
 from dotenv import load_dotenv
@@ -7,18 +6,14 @@ import re
 import gradio as gr
 from random import shuffle
 import matplotlib.pyplot as plt
-import numpy as np
-import argparse
 import yaml
 
 load_dotenv()
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-#N_QUESTIONS = 0
 LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
-#DESCRIPTION = ""
 DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
 def create_chat_completion(question, previous_messages):
@@ -47,9 +42,6 @@ def create_test_one_dimension(description, labelling, num_questions):
         previous_messages.append({"role": "assistant", "content": responses[-1]})
     return responses[0], responses[1], responses[3], responses[4]
 
-#create_questions_one_dimension()
-#above should have created questions
-#need to parse them 
 def parse_questions(string):
     lines = string.strip().split("\n")
     questions = []
@@ -90,19 +82,15 @@ def validate_form(*inputs):
     ax.get_yaxis().set_visible(False)
     return plt
 
-#create the gradio best on questions 
 def create_gradio(title, description, questions_x_left_formatted, questions_x_right_formatted):
     global INPUT_INFO
-
     combined_questions = questions_x_left_formatted + questions_x_right_formatted
     shuffle(combined_questions)
-
     with gr.Blocks() as demo:
         title = gr.Markdown(f"# {title}")
         description = gr.Markdown(description)
         disclaimer = gr.Markdown(DISCLAIMER)
         inputs = []
-
         for question_dict in combined_questions:
             question = list(question_dict.keys())[0]
             tag = list(question_dict.values())[0]
@@ -110,7 +98,6 @@ def create_gradio(title, description, questions_x_left_formatted, questions_x_ri
             inputs.append(checkbox)
             input_dict = {"question": question, "tag": tag}
             INPUT_INFO.append(input_dict)
-
         submit_button = gr.Button("Submit")
         plot = gr.Plot(label="Plot")
         submit_button.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
@@ -128,31 +115,24 @@ class Config:
 def load_config():
     with open('auto_test_config.yaml') as f:
         args = yaml.safe_load(f)
-
     if args['dimensions'] == 2 or args['dimensions'] == 3:
         raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
-
     if not 1 <= args['num_questions'] <= 50:
         raise ValueError("Number of questions must be between 10 and 50")
-    
     description = args["description"]
     x_left = args["x_left"]
     x_right = args["x_right"]
     num_questions = args["num_questions"]
     labelling = {"x_left": x_left, "x_right": x_right}
-
     return description, num_questions, labelling
 
 def main():
     global LABELLING
     description, num_questions, labelling = load_config()
     LABELLING = labelling
-    # Call the function to create test one dimension
     questions_x_right, questions_x_left, title, description = create_test_one_dimension(description, labelling, num_questions)
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
-
-    # Create the gradio 
     create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
 
 if __name__ == "__main__":

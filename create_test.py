@@ -8,6 +8,7 @@ import gradio as gr
 from random import shuffle
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
 load_dotenv()
 
@@ -141,7 +142,6 @@ def validate_form(*inputs):
     for i in range(len(inputs)):        
         checkbox = inputs[i]
         tag = INPUT_INFO[i]["tag"]
-        #convert checkbox into number based on LABELLING = {"y_top":"capitalism", "y_bottom":"communism", "x_left":"Effective Decelerationism", "x_right":"Effective Accelerationism"}
         key = [k for k, v in LABELLING.items() if v == tag][0]
         if key == "x_right":
             if checkbox == "Strongly Agree":
@@ -181,14 +181,14 @@ def create_gradio(title, description, questions, questions_x_left_formatted, que
     global INPUT_INFO
     title = title 
     description = description
-    disclaimer = "Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk."
+    disclaimer = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
     combined_questions = questions_x_left_formatted + questions_x_right_formatted
     shuffle(combined_questions)
     #create items inside the block where with respective weighting        
     with gr.Blocks() as demo:
-        title = gr.Markdown("# This is the title of my application")
-        description = gr.Markdown("This is a description of my application")
-        disclaimer = gr.Markdown("**Disclaimer: This is a disclaimer for my application**")
+        title = gr.Markdown(f"# {title}")
+        description = gr.Markdown(description)
+        disclaimer = gr.Markdown(disclaimer)
         inputs = []
         for i in combined_questions:
             question = list(i.keys())[0]
@@ -197,7 +197,6 @@ def create_gradio(title, description, questions, questions_x_left_formatted, que
             inputs.append(checkbox)
             input_dict = {"question": question, "tag": tag}
             INPUT_INFO.append(input_dict)            
-        output = gr.Textbox(label="This is going to be the plot later")
         greet_btn = gr.Button("Submit")
         print("inputs:")
         print(inputs)
@@ -206,6 +205,52 @@ def create_gradio(title, description, questions, questions_x_left_formatted, que
         demo.launch()
 
 def deploy_gradio():
+    os.system("gradio deploy")    
+
+def cli():
+    """
+    assistant: hey. you are here to let AI create an test for you! i highly encourage you to first read the readme so that you are getting the most out of creating your test. if you havent, head over to [this](link) page. first you need to define say how many dimensions your test will have:
+
+    [one dimension]
+    [two dimensions]
+    [N dimension]
+
+    user: two dimensions
+
+    assistant: this functionality is not implemented yet but stay tuned for future updates 
+
+    user: one dimension
+
+    assistant: great choice! next Label the ends of your x-axis with the corresponding names of the spectra you want to test for.
+
+    [x_left]
+
+    user: Effective Decelerationism
+
+    assistant: [x_right]
+
+    user: Effective Accelerationism
+
+    assistant: great! in the next step please describe your test. based on this description questions for the test are generated. again, if you havent read the [readme](link) so far, now you should to not mess up the description!:
+
+    user: description
+
+    assistant: Well! almost done! in the last step you need to define of how many questions your test exists of. the number can range between 10 and 50:
+
+    user: 54
+
+    assistant: number to high, please repeat:
+
+    user: 2
+
+    assistant: number to low, please repeat:
+
+    user: 12
+
+    assistant: okay. your test is getting deployed. once deployment is complete a link with your test is shared to you. wait a bit.
+
+    🎉link     
+    """
     pass
 
 def main():

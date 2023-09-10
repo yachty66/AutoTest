@@ -1,3 +1,9 @@
+---
+title: AutoTest
+app_file: create_test.py
+sdk: gradio
+sdk_version: 3.43.2
+---
 # AutoTest
 
 - [ ] design for box with question and checkboxes
@@ -7,8 +13,11 @@
     - make a attractive submit button - 
     - throw an error if submit button is clicked but somewhere a checkmark is missing - 
 - [x] add title, description and disclaimery
-- [ ] one dim plot
+- [x] one dim plot
+- [x] set title etc
+- [x] deploy the gradio
 - [ ] make convenient CLI for launching a test
+- [ ] clean code up so that everything makes sense and people can understand code
 - [ ] create website where tests from github code are getting released
 - [ ] create launch video with sick ass demo software 
 - [ ] support two dimensional test

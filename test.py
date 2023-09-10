@@ -1,4 +1,4 @@
-"""import gradio as gr
+import gradio as gr
 
 def greet(input_one, input_two):
     # Check if all questions have been answered
@@ -14,11 +14,12 @@ with gr.Blocks() as demo:
     question = "Some based question"
     input_block_one = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
     input_block_two = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
+    inputs = [input_block_one, input_block_two]
     output = gr.Textbox(label="This is going to be the plot later")
     greet_btn = gr.Button("Submit")
-    greet_btn.click(fn=greet, inputs=[input_block_one, input_block_two], outputs=output, api_name="Submit")
+    greet_btn.click(fn=greet, inputs= [labelling] + inputs, outputs=output, api_name="Submit")
 
-demo.launch()"""
+demo.launch()
 """from random import shuffle
 
 combined_questions = [1,2,3,4,5]
@@ -26,14 +27,5 @@ shuffle(combined_questions)
 
 print(combined_questions)"""
 
-DESCRIPTION = """hello"""
 
-def main():
-    global DESCRIPTION
-    DESCRIPTION = "dude"
-   
-
-if __name__ == "__main__":
-    main()
-    print(DESCRIPTION)
 

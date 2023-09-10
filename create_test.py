@@ -15,10 +15,10 @@ load_dotenv()
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-N_QUESTIONS = 0
+#N_QUESTIONS = 0
 LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
-DESCRIPTION = ""
+#DESCRIPTION = ""
 DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
 def create_chat_completion(question, previous_messages):
@@ -28,14 +28,14 @@ def create_chat_completion(question, previous_messages):
         messages=previous_messages + [{"role": "user", "content": question}]
     )
 
-def create_test_one_dimension():
+def create_test_one_dimension(description, labelling, num_questions):
     questions = [
-        f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?""",
-        f"""Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N_QUESTIONS} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
-        1. This is an example. [{LABELLING["x_right"]}]
-        2. This is another example. [{LABELLING["x_left"]}]
-        At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {N_QUESTIONS / 2} questions with tag for {LABELLING["x_right"]} and make them not to similar. ## {LABELLING["x_right"]}:""",
-        f"""Great! Next, please create the other {N_QUESTIONS / 2} questions with tag for {LABELLING["x_left"]}. ## {LABELLING["x_left"]}:""",
+        f"""Your task is to design a test with {num_questions} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {labelling["x_left"]} on the left end and with {labelling["x_right"]} on the right end. The right end can be defined as {description}. {labelling["x_left"]} is the opposite. Do you understand this so far?""",
+        f"""Great! Now, please create the questions. They should vary and should not be too similar. You need to create {num_questions} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
+        1. This is an example. [{labelling["x_right"]}]
+        2. This is another example. [{labelling["x_left"]}]
+        At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {num_questions / 2} questions with tag for {labelling["x_right"]} and make them not to similar. ## {labelling["x_right"]}:""",
+        f"""Great! Next, please create the other {num_questions / 2} questions with tag for {labelling["x_left"]}. ## {labelling["x_left"]}:""",
         f"""Great! Next, please create a short appropriate title for the test.""",
         f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
     ]
@@ -119,6 +119,12 @@ def create_gradio(title, description, questions_x_left_formatted, questions_x_ri
 def deploy_gradio(name):
     os.system("gradio deploy")    
 
+class Config:
+    def __init__(self, description, x_left, x_right, num_questions):
+        self.description = description
+        self.labelling = {"x_left": x_left, "x_right": x_right}
+        self.num_questions = num_questions
+
 def load_config():
     with open('auto_test_config.yaml') as f:
         args = yaml.safe_load(f)
@@ -128,20 +134,21 @@ def load_config():
 
     if not 1 <= args['num_questions'] <= 50:
         raise ValueError("Number of questions must be between 10 and 50")
+    
+    description = args["description"]
+    x_left = args["x_left"]
+    x_right = args["x_right"]
+    num_questions = args["num_questions"]
+    labelling = {"x_left": x_left, "x_right": x_right}
 
-    return args['description'], args['x_left'], args['x_right'], args['num_questions']
+    return description, num_questions, labelling
 
 def main():
-    global DESCRIPTION
     global LABELLING
-    global N_QUESTIONS
-    description, x_left, x_right, num_questions = load_config()
-    DESCRIPTION = description
-    LABELLING["x_left"] = x_left
-    LABELLING["x_right"] = x_right
-    N_QUESTIONS = num_questions
+    description, num_questions, labelling = load_config()
+    LABELLING = labelling
     # Call the function to create test one dimension
-    questions_x_right, questions_x_left, title, description = create_test_one_dimension()
+    questions_x_right, questions_x_left, title, description = create_test_one_dimension(description, labelling, num_questions)
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
 

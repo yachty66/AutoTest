@@ -19,80 +19,33 @@ N_QUESTIONS = 0
 LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
 DESCRIPTION = ""
+DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
+
+def create_chat_completion(question, previous_messages):
+    return openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature=0.0,
+        messages=previous_messages + [{"role": "user", "content": question}]
+    )
 
 def create_test_one_dimension():
-    question_one = f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?"""
-    question_two = f"""
-    Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N_QUESTIONS} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
-    1. This is an example. [{LABELLING["x_right"]}]
-    2. This is another example. [{LABELLING["x_left"]}]
-
-    At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {N_QUESTIONS / 2} questions with tag for {LABELLING["x_right"]} and make them not to similar. ## {LABELLING["x_right"]}:
-    """
-    answer_one = "Yes, I understand. I am looking forward helping you with the design of the test!"
-    response_one = openai.ChatCompletion.create(
-        model="gpt-4",
-        temperature = 0.0, 
-        messages=[
-                {"role": "system", "content": "You are are a professional test writer."},
-                {"role": "user", "content": question_one},
-                {"role": "assistant", "content": answer_one},
-                {"role": "user", "content": question_two},
-            ]
-    )
-    response_one_content = response_one.choices[0].message["content"]
-    question_three = f"""Great! Next, please create the other {N_QUESTIONS / 2} questions with tag for {LABELLING["x_left"]}. ## {LABELLING["x_left"]}:"""
-    response_two = openai.ChatCompletion.create(
-        model="gpt-4",
-        temperature = 0.0, 
-        messages=[
-                {"role": "system", "content": "You are are a professional test writer."},
-                {"role": "user", "content": question_one},
-                {"role": "assistant", "content": answer_one},
-                {"role": "user", "content": question_two},
-                {"role": "assistant", "content": response_one_content},
-                {"role": "user", "content": question_three},
-            ]
-    )
-    #get title for test
-    response_two_content = response_one.choices[0].message["content"]
-    question_four = f"""Great! Next, please create a short appropriate title for the test."""
-    response_three = openai.ChatCompletion.create(
-        model="gpt-4",
-        temperature = 0.0, 
-        messages=[
-                {"role": "system", "content": "You are are a professional test writer."},
-                {"role": "user", "content": question_one},
-                {"role": "assistant", "content": answer_one},
-                {"role": "user", "content": question_two},
-                {"role": "assistant", "content": response_one_content},
-                {"role": "user", "content": question_three},
-                {"role": "assistant", "content": response_two_content},
-                {"role": "user", "content": question_four},
-            ]
-    )
-    title = response_three.choices[0].message["content"]
-
-    #get description for the test
-    question_five = f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
-    response_four = openai.ChatCompletion.create(
-        model="gpt-4",
-        temperature = 0.0, 
-        messages=[
-                {"role": "system", "content": "You are are a professional test writer."},
-                {"role": "user", "content": question_one},
-                {"role": "assistant", "content": answer_one},
-                {"role": "user", "content": question_two},
-                {"role": "assistant", "content": response_one_content},
-                {"role": "user", "content": question_three},
-                {"role": "assistant", "content": response_two_content},
-                {"role": "user", "content": question_four},
-                {"role": "assistant", "content": title},
-                {"role": "user", "content": question_five},
-            ]
-    )
-    description = response_four.choices[0].message["content"]
-    return response_one.choices[0].message["content"], response_two.choices[0].message["content"], title, description
+    questions = [
+        f"""Your task is to design a test with {N_QUESTIONS} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {LABELLING["x_left"]} on the left end and with {LABELLING["x_right"]} on the right end. The right end can be defined as {DESCRIPTION}. {LABELLING["x_left"]} is the opposite. Do you understand this so far?""",
+        f"""Great! Now, please create the questions. They should vary and should not be too similar. You need to create {N_QUESTIONS} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
+        1. This is an example. [{LABELLING["x_right"]}]
+        2. This is another example. [{LABELLING["x_left"]}]
+        At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {N_QUESTIONS / 2} questions with tag for {LABELLING["x_right"]} and make them not to similar. ## {LABELLING["x_right"]}:""",
+        f"""Great! Next, please create the other {N_QUESTIONS / 2} questions with tag for {LABELLING["x_left"]}. ## {LABELLING["x_left"]}:""",
+        f"""Great! Next, please create a short appropriate title for the test.""",
+        f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
+    ]
+    responses = []
+    previous_messages = [{"role": "system", "content": "You are are a professional test writer."}]
+    for question in questions:
+        response = create_chat_completion(question, previous_messages)
+        responses.append(response.choices[0].message["content"])
+        previous_messages.append({"role": "assistant", "content": responses[-1]})
+    return responses[0], responses[1], responses[3], responses[4]
 
 #create_questions_one_dimension()
 #above should have created questions
@@ -108,42 +61,27 @@ def parse_questions(string):
     return questions
 
 def validate_form(*inputs):
-    global input_info
-    print("inputs in validate form:")
-    print(inputs)    
-    #calculate the score 
+    global INPUT_INFO
+    score_map = {
+        "Strongly Agree": 2,
+        "Agree": 1,
+        "Neutral": 0,
+        "Disagree": -1,
+        "Strongly Disagree": -2
+    }
     x_right = 0
     x_left = 0
-    final = 0
-    for i in range(len(inputs)):        
-        checkbox = inputs[i]
-        tag = INPUT_INFO[i]["tag"]
+    for input_index in range(len(inputs)):
+        checkbox = inputs[input_index]
+        tag = INPUT_INFO[input_index]["tag"]
         key = [k for k, v in LABELLING.items() if v == tag][0]
         if key == "x_right":
-            if checkbox == "Strongly Agree":
-                x_right += 2
-            elif checkbox == "Agree":
-                x_right += 1
-            elif checkbox == "Neutral":
-                x_right += 0
-            elif checkbox == "Disagree":
-                x_right -= 1
-            elif checkbox == "Strongly Disagree":
-                x_right -= 2
+            x_right += score_map[checkbox]
         else:
-            if checkbox == "Strongly Agree":
-                x_left += 2
-            elif checkbox == "Agree":
-                x_left += 1
-            elif checkbox == "Neutral":
-                x_left += 0
-            elif checkbox == "Disagree":
-                x_left -= 1
-            elif checkbox == "Strongly Disagree":
-                x_left -= 2
-        final = x_right + x_left
+            x_left += score_map[checkbox]
         if checkbox is None:
             raise gr.Error("Cannot divide by zero!")
+    final = x_right + x_left
     fig, ax = plt.subplots()
     ax.hlines(1, -10, 10, linestyles='solid')
     ax.plot(final, 1, 'ro')
@@ -153,60 +91,62 @@ def validate_form(*inputs):
     return plt
 
 #create the gradio best on questions 
-def create_gradio(title, description, questions, questions_x_left_formatted, questions_x_right_formatted):
+def create_gradio(title, description, questions_x_left_formatted, questions_x_right_formatted):
     global INPUT_INFO
-    title = title 
-    description = description
-    disclaimer = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
+
     combined_questions = questions_x_left_formatted + questions_x_right_formatted
     shuffle(combined_questions)
-    #create items inside the block where with respective weighting        
+
     with gr.Blocks() as demo:
         title = gr.Markdown(f"# {title}")
         description = gr.Markdown(description)
-        disclaimer = gr.Markdown(disclaimer)
+        disclaimer = gr.Markdown(DISCLAIMER)
         inputs = []
-        for i in combined_questions:
-            question = list(i.keys())[0]
-            tag = list(i.values())[0]
+
+        for question_dict in combined_questions:
+            question = list(question_dict.keys())[0]
+            tag = list(question_dict.values())[0]
             checkbox = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
             inputs.append(checkbox)
             input_dict = {"question": question, "tag": tag}
-            INPUT_INFO.append(input_dict)            
-        greet_btn = gr.Button("Submit")
-        print("inputs:")
-        print(inputs)
+            INPUT_INFO.append(input_dict)
+
+        submit_button = gr.Button("Submit")
         plot = gr.Plot(label="Plot")
-        greet_btn.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
+        submit_button.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
         demo.launch()
 
 def deploy_gradio(name):
     os.system("gradio deploy")    
 
+def load_config():
+    with open('auto_test_config.yaml') as f:
+        args = yaml.safe_load(f)
+
+    if args['dimensions'] == 2 or args['dimensions'] == 3:
+        raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
+
+    if not 1 <= args['num_questions'] <= 50:
+        raise ValueError("Number of questions must be between 10 and 50")
+
+    return args['description'], args['x_left'], args['x_right'], args['num_questions']
+
 def main():
     global DESCRIPTION
     global LABELLING
     global N_QUESTIONS
-    with open('auto_test_config.yaml') as f:
-        args = yaml.safe_load(f)
-    if args['dimensions'] == 2 or args['dimensions'] == 3:
-        print("This functionality is not implemented yet but stay tuned for future updates")
-        return
-    if not 1 <= args['num_questions'] <= 50:
-        print("Number of questions must be between 10 and 50")
-        return
-    DESCRIPTION = args['description']
-    LABELLING["x_left"] = args['x_left']
-    LABELLING["x_right"] = args['x_right']
-    N_QUESTIONS = args['num_questions']
+    description, x_left, x_right, num_questions = load_config()
+    DESCRIPTION = description
+    LABELLING["x_left"] = x_left
+    LABELLING["x_right"] = x_right
+    N_QUESTIONS = num_questions
     # Call the function to create test one dimension
     questions_x_right, questions_x_left, title, description = create_test_one_dimension()
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
-    # Parse the questions
+
     # Create the gradio 
-    create_gradio(title, description, questions_x_right_formatted, questions_x_right_formatted, questions_x_left_formatted)
-    #deploy_gradio("gradio deploy")
+    create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
 
 if __name__ == "__main__":
     main()

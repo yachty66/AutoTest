@@ -30,7 +30,6 @@ def create_test_one_dimension(description, labelling, num_questions):
         2. This is another example. [{labelling["x_left"]}]
         At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {num_questions / 2} questions for the tag {labelling["x_right"]} and make them not to similar (make sure there are not so many word repetitions). only provide questions for this tag! again it should be {num_questions / 2} number of questions. ## {labelling["x_right"]}:""",
         f"""Great! Next, please create the other {num_questions / 2} questions with the tag {labelling["x_left"]}. ## {labelling["x_left"]}:""",
-        f"""Great! Next, please create a short appropriate title for the test.""",
         f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
     ]
     responses = []
@@ -44,9 +43,8 @@ def create_test_one_dimension(description, labelling, num_questions):
         previous_messages.append({"role": "assistant", "content": responses[-1]})
     questions_x_right = responses[0]
     questions_x_left = responses[1]
-    title = responses[2]
-    response_description = responses[3]
-    return questions_x_right, questions_x_left, title, response_description
+    response_description = responses[2]
+    return questions_x_right, questions_x_left, response_description
 
 def parse_questions(string):
     lines = string.strip().split("\n")
@@ -126,18 +124,19 @@ def load_config():
         raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
     if not 1 <= args['num_questions'] <= 50:
         raise ValueError("Number of questions must be between 10 and 50")
+    title = args["title"]
     description = args["description"]
     x_left = args["x_left"]
     x_right = args["x_right"]
     num_questions = args["num_questions"]
     labelling = {"x_left": x_left, "x_right": x_right}
-    return description, num_questions, labelling
+    return description, num_questions, labelling, title
 
 def main():
     global LABELLING
-    description, num_questions, labelling = load_config()
+    description, num_questions, labelling, title = load_config()
     LABELLING = labelling
-    questions_x_right, questions_x_left, title, description = create_test_one_dimension(description, labelling, num_questions)
+    questions_x_right, questions_x_left, description = create_test_one_dimension(description, labelling, num_questions)
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
     create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)

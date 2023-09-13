@@ -1,3 +1,8 @@
+yesterday i saw people complaining about chatgpt outages. in that case i can highly recommend the chatgpt clone from @mckaywrigley. you can easily deploy your own chatgpt interface to vercel and than you plug in your open ai key. 
+
+yesterday i saw people complaining about chatgpt outages. in that case i can highly recommend the chatgpt clone from @mckaywrigley. you can easily deploy your own chatgpt interface to vercel and than you plug in your open ai key. 
+
+
 ---
 title: AutoTest
 app_file: create_test.py

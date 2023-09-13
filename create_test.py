@@ -30,7 +30,7 @@ def create_test_one_dimension(description, labelling, num_questions):
         2. This is another example. [{labelling["x_left"]}]
         At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {num_questions / 2} questions for the tag {labelling["x_right"]} and make them not to similar (make sure there are not so many word repetitions). only provide questions for this tag! again it should be {num_questions / 2} number of questions. ## {labelling["x_right"]}:""",
         f"""Great! Next, please create the other {num_questions / 2} questions with the tag {labelling["x_left"]}. ## {labelling["x_left"]}:""",
-        f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
+        f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test. Only provide the description and no headline. ## Description:"""
     ]
     responses = []
     previous_messages = [{"role": "system", "content": "You are are a professional test writer."}]
@@ -88,6 +88,8 @@ def validate_form(*inputs):
     return plt
 
 def create_gradio(title, description, questions_x_left_formatted, questions_x_right_formatted):
+    print("description:")
+    print(description)
     global INPUT_INFO
     combined_questions = questions_x_left_formatted + questions_x_right_formatted
     shuffle(combined_questions)

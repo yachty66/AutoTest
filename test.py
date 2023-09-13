@@ -1,4 +1,4 @@
-import gradio as gr
+"""import gradio as gr
 
 def greet(input_one, input_two):
     # Check if all questions have been answered
@@ -19,7 +19,7 @@ with gr.Blocks() as demo:
     greet_btn = gr.Button("Submit")
     greet_btn.click(fn=greet, inputs= [labelling] + inputs, outputs=output, api_name="Submit")
 
-demo.launch()
+demo.launch()"""
 """from random import shuffle
 
 combined_questions = [1,2,3,4,5]
@@ -27,5 +27,7 @@ shuffle(combined_questions)
 
 print(combined_questions)"""
 
+
+print(5 / 2 )
 
 

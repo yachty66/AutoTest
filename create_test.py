@@ -16,31 +16,37 @@ LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
 DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
-def create_chat_completion(question, previous_messages):
+def create_chat_completion(previous_messages):
     return openai.ChatCompletion.create(
         model="gpt-4",
         temperature=0.0,
-        messages=previous_messages + [{"role": "user", "content": question}]
+        messages=previous_messages
     )
 
 def create_test_one_dimension(description, labelling, num_questions):
     questions = [
-        f"""Your task is to design a test with {num_questions} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {labelling["x_left"]} on the left end and with {labelling["x_right"]} on the right end. The right end can be defined as {description}. {labelling["x_left"]} is the opposite. Do you understand this so far?""",
         f"""Great! Now, please create the questions. They should vary and should not be too similar. You need to create {num_questions} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
         1. This is an example. [{labelling["x_right"]}]
         2. This is another example. [{labelling["x_left"]}]
-        At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {num_questions / 2} questions with tag for {labelling["x_right"]} and make them not to similar. ## {labelling["x_right"]}:""",
-        f"""Great! Next, please create the other {num_questions / 2} questions with tag for {labelling["x_left"]}. ## {labelling["x_left"]}:""",
+        At the end of the questions are tags to clearly indicate the tag each question supports. Now, please create all {num_questions / 2} questions for the tag {labelling["x_right"]} and make them not to similar (make sure there are not so many word repetitions). only provide questions for this tag! again it should be {num_questions / 2} number of questions. ## {labelling["x_right"]}:""",
+        f"""Great! Next, please create the other {num_questions / 2} questions with the tag {labelling["x_left"]}. ## {labelling["x_left"]}:""",
         f"""Great! Next, please create a short appropriate title for the test.""",
         f"""Great! Next, please create a appropriate description for the test. The user should be able to know what to expect from the test."""
     ]
     responses = []
     previous_messages = [{"role": "system", "content": "You are are a professional test writer."}]
+    previous_messages.append({"role": "user", "content": f"""Your task is to design a test with {num_questions} questions. The goal for a test taker is to see where they land on the spectrum of the test. The test output is a spectrum on one x-axis; the x-axis is represented by {labelling["x_left"]} on the left end and with {labelling["x_right"]} on the right end. The right end can be defined as {description}. {labelling["x_left"]} is the opposite. Do you understand this so far?"""})
+    previous_messages.append({"role": "assistant", "content": "Yes, I do understand this and I am looking forward to assist you with the test creation!"})
     for question in questions:
-        response = create_chat_completion(question, previous_messages)
+        previous_messages.append({"role": "user", "content": question})
+        response = create_chat_completion(previous_messages)
         responses.append(response.choices[0].message["content"])
         previous_messages.append({"role": "assistant", "content": responses[-1]})
-    return responses[0], responses[1], responses[3], responses[4]
+    questions_x_right = responses[0]
+    questions_x_left = responses[1]
+    title = responses[2]
+    response_description = responses[3]
+    return questions_x_right, questions_x_left, title, response_description
 
 def parse_questions(string):
     lines = string.strip().split("\n")
@@ -63,21 +69,22 @@ def validate_form(*inputs):
     }
     x_right = 0
     x_left = 0
-    for input_index in range(len(inputs)):
+    number_questions = len(inputs)
+    for input_index in range(number_questions):
         checkbox = inputs[input_index]
+        if checkbox is None:
+            raise gr.Error("You forgot a checkbox!")
         tag = INPUT_INFO[input_index]["tag"]
         key = [k for k, v in LABELLING.items() if v == tag][0]
         if key == "x_right":
             x_right += score_map[checkbox]
         else:
             x_left += score_map[checkbox]
-        if checkbox is None:
-            raise gr.Error("Cannot divide by zero!")
-    final = x_right + x_left
+    final = x_right + (-x_left)
     fig, ax = plt.subplots()
-    ax.hlines(1, -10, 10, linestyles='solid')
+    ax.hlines(1, 2*(-number_questions), 2*number_questions, linestyles='solid')
     ax.plot(final, 1, 'ro')
-    ax.set_xticks([-10, 0, 10])
+    ax.set_xticks([2*(-number_questions), 0, 2*number_questions])
     ax.set_xticklabels([LABELLING["x_left"], 'Neutral', LABELLING["x_right"]])
     ax.get_yaxis().set_visible(False)
     return plt

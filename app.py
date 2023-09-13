@@ -163,7 +163,7 @@ def main():
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
     #create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
-    #deploy to gradio
+    #deploy to gradiossss
     deploy_gradio("k")
 
 if __name__ == "__main__":

@@ -7,11 +7,13 @@ import gradio as gr
 from random import shuffle
 import matplotlib.pyplot as plt
 import yaml
+import shutil
 from huggingface_hub import HfApi
 
 load_dotenv()
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
+HF_TOKEN = os.getenv('HF_TOKEN')
 
 LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
@@ -114,10 +116,9 @@ def create_gradio(title, description, questions_x_left_formatted, questions_x_ri
 def deploy_gradio(name):
     # Initialize the HfApi class
     hf_api = HfApi()
-
     # Define your token
-    token = "your-huggingface-token"
-    #ll
+    token = HF_TOKEN
+
     # Create a new huggingface repo
     repo_url = hf_api.create_repo(
         repo_id=name,
@@ -128,13 +129,25 @@ def deploy_gradio(name):
         exist_ok=True
     )
 
-    #all i want to do here is to push to the main repo here 
+    hf_api.set_repo_secret(repo_id=name, token=token, secret_id="OPENAI_API_KEY", secret_value=openai.api_key)
+    # Clone the repository
+    os.system(f'git clone {repo_url}')
 
-    # Push app.py and requirements to repo
-    # You need to implement this part
+    # Copy the files into the repository
+    shutil.copy('app.py', f'{name}/app.py')
 
-    os.system("gradio deploy")    
-    os.system("test")    
+    shutil.copy('requirements.txt', f'{name}/requirements.txt')
+
+    shutil.copy('auto_test_config.yaml', f'{name}/auto_test_config.yaml')
+
+    # Add the files to the repository
+    os.system(f'cd {name} && git add .')
+
+    # Commit the changes
+    os.system(f'cd {name} && git commit -m "Initial commit"')
+
+    # Push the changes
+    os.system(f'cd {name} && git push')   
 
 class Config:
     def __init__(self, description, x_left, x_right, num_questions):
@@ -157,16 +170,16 @@ def load_config():
     labelling = {"x_left": x_left, "x_right": x_right}
     return description, num_questions, labelling, title
 
-def main():
+def main(name):
     global LABELLING
     description, num_questions, labelling, title = load_config()
     LABELLING = labelling
     questions_x_right, questions_x_left, description = create_test_one_dimension(description, labelling, num_questions)
     questions_x_right_formatted = parse_questions(questions_x_right)
     questions_x_left_formatted = parse_questions(questions_x_left)
-    #create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
-    #deploy to gradiossss
-    deploy_gradio("k")
+    create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
+    deploy_gradio(name)
 
 if __name__ == "__main__":
-    main()
+    name = "bier"
+    main(name)

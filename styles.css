@@ -1,6 +1,0 @@
-/* This is a general rule to center all Gradio input components. 
-   You may need to adjust it based on your specific needs. */
-   .gradio-content input {
-    margin: auto;
-    display: block;
-}

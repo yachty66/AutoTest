@@ -17,7 +17,6 @@ HF_TOKEN = os.getenv('HF_TOKEN')
 
 LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
-DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
 def main(name):
     """

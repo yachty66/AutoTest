@@ -1,23 +1,11 @@
-import os
-from requests import head
-import openai
-from dotenv import load_dotenv
-import re
 import gradio as gr
 from random import shuffle
 import matplotlib.pyplot as plt
-import yaml
-import shutil
 import pickle
-from huggingface_hub import HfApi
 
-#load_dotenv()
-
-#HF_TOKEN = os.getenv('HF_TOKEN')
 DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
 def validate_form(*inputs):
-    #global INPUT_INFO
     score_map = {
         "Strongly Agree": 2,
         "Agree": 1,
@@ -47,17 +35,14 @@ def validate_form(*inputs):
     ax.get_yaxis().set_visible(False)
     return plt
 
-#def create_gradio(title, description, questions_x_left_formatted, questions_x_right_formatted):
 with open('data.pkl', 'rb') as f:
     data = pickle.load(f)
-# Assign loaded data to variables
 title = data["title"]
 description = data["description"]
 questions_x_right_formatted = data["questions_x_right_formatted"]
 questions_x_left_formatted = data["questions_x_left_formatted"]
 LABELLING = data["LABELLING"]
 INPUT_INFO = data["INPUT_INFO"]
-#global INPUT_INFO
 combined_questions = questions_x_left_formatted + questions_x_right_formatted
 shuffle(combined_questions)
 with gr.Blocks() as demo:
@@ -76,38 +61,4 @@ with gr.Blocks() as demo:
     plot = gr.Plot(label="Plot")
     submit_button.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
 demo.launch()
-
-"""def deploy_gradio(name):
-    # Initialize the HfApi class
-    hf_api = HfApi()
-    # Define your token
-    token = HF_TOKEN
-    # Create a new huggingface repo
-    repo_url = hf_api.create_repo(
-        repo_id=name,
-        token=token,
-        private=False,
-        repo_type="space",
-        space_sdk="gradio",
-        exist_ok=True
-    )
-    # Clone the repository
-    os.system(f'git clone {repo_url}')
-    # Copy the files into the repository
-    shutil.copy('app.py', f'{name}/app.py')
-    shutil.copy('requirements.txt', f'{name}/requirements.txt')
-    shutil.copy('auto_test_config.yaml', f'{name}/auto_test_config.yaml')
-    # Add the files to the repository
-    os.system(f'cd {name} && git add .')
-    # Commit the changes
-    os.system(f'cd {name} && git commit -m "Initial commit"')
-    # Push the changes
-    os.system(f'cd {name} && git push')"""
-
-#global LABELLING
-#global INPUT_INFO
-# Load data from pickle file
-
-#create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
-
 

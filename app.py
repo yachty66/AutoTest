@@ -104,11 +104,9 @@ demo.launch()
     # Push the changes
     os.system(f'cd {name} && git push')"""
 
-
 #global LABELLING
 #global INPUT_INFO
 # Load data from pickle file
-
 
 #create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
 

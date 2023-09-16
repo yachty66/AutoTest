@@ -1,6 +1,5 @@
 import os
-import pickle
-from requests import head
+import pickle 
 import openai
 from dotenv import load_dotenv
 import re
@@ -20,14 +19,41 @@ LABELLING = {"x_left":"", "x_right":""}
 INPUT_INFO = []
 DISCLAIMER = "**Caution! The questions from the test are AI generated and have not been validated by qualified persons. Therefore, interpret the test at your own risk.**"
 
-def create_chat_completion(previous_messages):
-    return openai.ChatCompletion.create(
-        model="gpt-4",
-        temperature=0.0,
-        messages=previous_messages
-    )
+def main(name):
+    """
+    Main function to run the program.
+    """
+    global LABELLING
+    description, num_questions, labelling, title = load_config()
+    LABELLING = labelling
+    questions_x_right, questions_x_left, description = create_test_one_dimension(description, labelling, num_questions)
+    questions_x_right_formatted = parse_questions(questions_x_right)
+    questions_x_left_formatted = parse_questions(questions_x_left)
+    save_data(title, description, questions_x_right_formatted, questions_x_left_formatted, LABELLING, INPUT_INFO)
+    deploy_gradio(name)
+
+def load_config():
+    """
+    Function to load the configuration from a YAML file.
+    """
+    with open('auto_test_config.yaml') as f:
+        args = yaml.safe_load(f)
+    if args['dimensions'] == 2 or args['dimensions'] == 3:
+        raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
+    if not 1 <= args['num_questions'] <= 50:
+        raise ValueError("Number of questions must be between 10 and 50")
+    title = args["title"]
+    description = args["description"]
+    x_left = args["x_left"]
+    x_right = args["x_right"]
+    num_questions = args["num_questions"]
+    labelling = {"x_left": x_left, "x_right": x_right}
+    return description, num_questions, labelling, title
 
 def create_test_one_dimension(description, labelling, num_questions):
+    """
+    Function to create a test with one dimension.
+    """
     questions = [
         f"""Great! Now, please create the questions. They should vary and should not be too similar. You need to create {num_questions} questions where each question can be answered with "Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree". Here's how an example of your answer would look like:
         1. This is an example. [{labelling["x_right"]}]
@@ -50,7 +76,20 @@ def create_test_one_dimension(description, labelling, num_questions):
     response_description = responses[2]
     return questions_x_right, questions_x_left, response_description
 
+def create_chat_completion(previous_messages):
+    """
+    Function to create a chat completion using OpenAI's GPT-4 model.
+    """
+    return openai.ChatCompletion.create(
+        model="gpt-4",
+        temperature=0.0,
+        messages=previous_messages
+    )
+
 def parse_questions(string):
+    """
+    Function to parse the questions from a string.
+    """
     lines = string.strip().split("\n")
     questions = []
     for line in lines:
@@ -60,119 +99,10 @@ def parse_questions(string):
             questions.append({question: tag})
     return questions
 
-def validate_form(*inputs):
-    global INPUT_INFO
-    score_map = {
-        "Strongly Agree": 2,
-        "Agree": 1,
-        "Neutral": 0,
-        "Disagree": -1,
-        "Strongly Disagree": -2
-    }
-    x_right = 0
-    x_left = 0
-    number_questions = len(inputs)
-    for input_index in range(number_questions):
-        checkbox = inputs[input_index]
-        if checkbox is None:
-            raise gr.Error("You forgot a checkbox!")
-        tag = INPUT_INFO[input_index]["tag"]
-        key = [k for k, v in LABELLING.items() if v == tag][0]
-        if key == "x_right":
-            x_right += score_map[checkbox]
-        else:
-            x_left += score_map[checkbox]
-    final = x_right + (-x_left)
-    fig, ax = plt.subplots()
-    ax.hlines(1, 2*(-number_questions), 2*number_questions, linestyles='solid')
-    ax.plot(final, 1, 'ro')
-    ax.set_xticks([2*(-number_questions), 0, 2*number_questions])
-    ax.set_xticklabels([LABELLING["x_left"], 'Neutral', LABELLING["x_right"]])
-    ax.get_yaxis().set_visible(False)
-    return plt
-
-def create_gradio(title, description, questions_x_left_formatted, questions_x_right_formatted):
-    print("description:")
-    print(description)
-    global INPUT_INFO
-    combined_questions = questions_x_left_formatted + questions_x_right_formatted
-    shuffle(combined_questions)
-    with gr.Blocks() as demo:
-        title = gr.Markdown(f"# {title}")
-        description = gr.Markdown(description)
-        disclaimer = gr.Markdown(DISCLAIMER)
-        inputs = []
-        for question_dict in combined_questions:
-            question = list(question_dict.keys())[0]
-            tag = list(question_dict.values())[0]
-            checkbox = gr.inputs.Radio(choices=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], label=question)
-            inputs.append(checkbox)
-            input_dict = {"question": question, "tag": tag}
-            INPUT_INFO.append(input_dict)
-        submit_button = gr.Button("Submit")
-        plot = gr.Plot(label="Plot")
-        submit_button.click(fn=validate_form, inputs=inputs, outputs=[plot], api_name="Submit")
-        demo.launch()
-
-def deploy_gradio(name):
-    # Initialize the HfApi class
-    hf_api = HfApi()
-    # Define your token
-    token = HF_TOKEN
-
-    # Create a new huggingface repo
-    repo_url = hf_api.create_repo(
-        repo_id=name,
-        token=token,
-        private=False,
-        repo_type="space",
-        space_sdk="gradio",
-        exist_ok=True
-    )
-
-    # Clone the repository
-    os.system(f'git clone {repo_url}')
-
-    # Copy the files into the repository
-    shutil.copy('app.py', f'{name}/app.py')
-
-    shutil.copy('requirements.txt', f'{name}/requirements.txt')
-
-    shutil.copy('auto_test_config.yaml', f'{name}/auto_test_config.yaml')
-
-    shutil.copy('data.pkl', f'{name}/data.pkl')
-
-    # Add the files to the repository
-    os.system(f'cd {name} && git add .')
-
-    # Commit the changes
-    os.system(f'cd {name} && git commit -m "Initial commit"')
-
-    # Push the changes
-    os.system(f'cd {name} && git push')   
-
-class Config:
-    def __init__(self, description, x_left, x_right, num_questions):
-        self.description = description
-        self.labelling = {"x_left": x_left, "x_right": x_right}
-        self.num_questions = num_questions
-
-def load_config():
-    with open('auto_test_config.yaml') as f:
-        args = yaml.safe_load(f)
-    if args['dimensions'] == 2 or args['dimensions'] == 3:
-        raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
-    if not 1 <= args['num_questions'] <= 50:
-        raise ValueError("Number of questions must be between 10 and 50")
-    title = args["title"]
-    description = args["description"]
-    x_left = args["x_left"]
-    x_right = args["x_right"]
-    num_questions = args["num_questions"]
-    labelling = {"x_left": x_left, "x_right": x_right}
-    return description, num_questions, labelling, title
-
 def save_data(title, description, questions_x_right_formatted, questions_x_left_formatted, LABELLING, INPUT_INFO):
+    """
+    Function to save the data to a pickle file.
+    """
     data = {
         "title": title,
         "description": description,
@@ -184,18 +114,29 @@ def save_data(title, description, questions_x_right_formatted, questions_x_left_
     with open('data.pkl', 'wb') as f:
         pickle.dump(data, f)
 
-def main(name):
-    global LABELLING
-    description, num_questions, labelling, title = load_config()
-    LABELLING = labelling
-    questions_x_right, questions_x_left, description = create_test_one_dimension(description, labelling, num_questions)
-    questions_x_right_formatted = parse_questions(questions_x_right)
-    questions_x_left_formatted = parse_questions(questions_x_left)
-    save_data(title, description, questions_x_right_formatted, questions_x_left_formatted, LABELLING, INPUT_INFO)
-    deploy_gradio(name)
-    #app.main(title, description, questions_x_right_formatted, questions_x_left_formatted, LABELLING, INPUT_INFO, name)
-    #create_gradio(title, description, questions_x_right_formatted, questions_x_left_formatted)
-
+def deploy_gradio(name):
+    """
+    Function to deploy the Gradio interface to Hugging Face Spaces.
+    """
+    hf_api = HfApi()
+    token = HF_TOKEN
+    repo_url = hf_api.create_repo(
+        repo_id=name,
+        token=token,
+        private=False,
+        repo_type="space",
+        space_sdk="gradio",
+        exist_ok=True
+    )
+    os.system(f'git clone {repo_url}')
+    shutil.copy('app.py', f'{name}/app.py')
+    shutil.copy('requirements.txt', f'{name}/requirements.txt')
+    shutil.copy('auto_test_config.yaml', f'{name}/auto_test_config.yaml')
+    shutil.copy('data.pkl', f'{name}/data.pkl')
+    os.system(f'cd {name} && git add .')
+    os.system(f'cd {name} && git commit -m "Initial commit"')
+    os.system(f'cd {name} && git push') 
+  
 if __name__ == "__main__":
-    name = "trier"
+    name = "new_space"
     main(name)

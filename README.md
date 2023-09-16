@@ -1,6 +1,6 @@
-# Project Title
+# AutoTest
 
-This project is a test generator that uses OpenAI's GPT-4 model to create a test with a set of questions. The test output is a spectrum on one x-axis, represented by two opposing concepts. The user's responses to the questions determine where they land on this spectrum.
+This project is a test generator that uses OpenAI's GPT-4 model to create a test with a set of questions. The test output is a spectrum on one x-axis, represented by two opposing concepts. The user's responses to the questions determine where they land on this spectrum. Once the test is generated a huggingface space with the test is generated where i.e. it will be publicly available and you can share the test with others or do whatever you want with it.
 
 ## Getting Started
 
@@ -38,23 +38,63 @@ python main.py your_test_name
 
 4. The generated test will be deployed to Hugging Face Spaces. You can view it at https://huggingface.co/spaces/your_username/your_test_name.
 
-## Code Overview
+## Example
 
-The main functions in the code are:
+Following a step by step approach for how it would like if you would create a test by yourself. For creating a test everything whats necessary to fill out is the scaffold of the yaml file `auto_test_config.yaml`. the better the scaffold the better the resulting test will be.
 
-- `main(name)`: This is the main function that runs the program. It loads the configuration, generates the test, saves the data, and deploys the test to Hugging Face Spaces.
+1. First you need to give the test a name. The name should be representive for the test you wanna create. Lets say we choose the following test title:
 
-- `load_config()`: This function loads the configuration from a YAML file.
+`title: "Effective Accelerationism vs. Effective Decelerationism"`
 
-- `create_one_dimension_test(description, num_questions, labelling)`: This function creates a test with one dimension.
+2. In the next step the dimensions of the test need to be set. For now the only possible option to set is `1`:
 
-- `parse_questions(string)`: This function parses the questions from a string.
+`dimensions: 1`
 
-- `deploy_gradio(name)`: This function deploys the Gradio interface to Hugging Face Spaces.
+I.e. the test exists of results which can be mapped on one x-axis i.e. it exist two possible outputs. later at 🧪AutoTest we plan to support also with two and N dimensions, so stay tuned for this!
 
-## Contributing
+3. In the next step you need to define the the name of each x_axis end. In our case we choose the left end of the x-axis to be named Effective Decelerationism and the right end Effective Accelerationism:
 
-Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
-License
+```yaml
+x_left: "Effective Decelerationism"
+x_right: "Effective Accelerationism"
+```
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+4. in the next step step it is necessary to provide the description for the test. The logic here is that the description needs to be provided for both ends of the axis. first the description for the right side:
+
+```yaml
+description_x_right: |
+  Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
+  
+  1. The overarching goal for humanity is to preserve the light of consciousness.
+  2. Technology and market forces (technocapital) are accelerating in their power and abilities.
+  3. This force cannot be stopped.
+  4. Technocapital can usher in the next evolution of consciousness, creating unthinkable next-generation lifeforms and silicon-based awareness.
+  5. New forms of consciousness by definition will make sentience more varied and durable. We want this.
+  6. Technology is leverage. As it advances, it becomes easier to extinquish all conscious life in our corner of the universe.
+  Attempting to stall progress isn't risk free.
+  7. Society and the individual's context within it are rapidly changing, which leads to greater societal instability and mind viruses. (deterritorialisation and reterritorialisation).
+  8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
+  9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE INFLECTION IN THIS PROCESS.
+  10. Effective Accelerationism, e/acc, is a set of ideas and practices that seek to maximize the probability of the technocapital singularity, and subsequently, the ability for emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations, and philosophy. Please join us on #eacc twitter, and let's work towards a hundred trillion meta-organisms flourishing in the galaxy.
+```
+
+and than for the left site. in the case the left side is just the opposite what is mostly the case for one dimensional tests than you have to do the following:
+
+```yaml
+description_x_left: |
+  the opposite
+```
+
+if you want to add more context you can do this but keep it short similar to the `description_x_right` example. 
+
+5. The last configuration step is to set the number of questions. this can be a number between 10 and 50 both numbers inclusive. this setting defines of how many questions the test will exist off. In the following example we set this number to 30:
+
+```yaml
+num_questions: 30
+```
+
+Alright now everything is defined and the app for creating the test is ready to be called. You need to call the python script together with the name of your yaml file you just created. in this example we are calling the yaml file `accelerationism_vs_decelerationism.yaml` so we are going to run the following command:
+
+`python main.py accelerationism_vs_decelerationism.yaml`
+
+It takes up to a few minutes until the test is created but once the test is done and deployed you see a link to the hugginface space for the link. you can use this test now to embedd it on your website or just share it like it is to your friends. 

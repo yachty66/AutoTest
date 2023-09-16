@@ -1,0 +1,9 @@
+title: "Capitalism vs. Communism"
+dimensions: 1
+x_left: "Communism"
+x_right: "Capitalism"
+description_x_right: |
+  capitalism
+description_x_left: |
+  communism
+num_questions: 10

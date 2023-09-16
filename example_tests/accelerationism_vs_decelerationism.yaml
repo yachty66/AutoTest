@@ -2,7 +2,7 @@ title: "Effective Accelerationism vs. Effective Decelerationism"
 dimensions: 1
 x_left: "Effective Decelerationism"
 x_right: "Effective Accelerationism"
-description: |
+description_x_right: |
   Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
   
   1. The overarching goal for humanity is to preserve the light of consciousness.
@@ -16,4 +16,6 @@ description: |
   8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
   9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE INFLECTION IN THIS PROCESS.
   10. Effective Accelerationism, e/acc, is a set of ideas and practices that seek to maximize the probability of the technocapital singularity, and subsequently, the ability for emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations, and philosophy. Please join us on #eacc twitter, and let's work towards a hundred trillion meta-organisms flourishing in the galaxy.
-num_questions: 2
+description_x_left: |
+  the opposite
+num_questions: 10

@@ -1,0 +1,27 @@
+title: "INTP vs. INTJ"
+dimensions: 1
+x_right: "INTJ"
+x_left: "INTP"
+description_x_right: |
+  Purposeful: Every action and thought tends to serve a longer-term goal or vision.
+  Completion Driven: They have a compulsion to finish projects and achieve set objectives.
+  Order-seeking: Prefers a world that is structured and organized.
+  Predictive: Tries to anticipate future outcomes and prepares accordingly.
+  System Builders: They design and create comprehensive systems to address challenges.
+  Focused: INTJs often block out distractions to concentrate on their chosen task.
+  Single-Minded: Once they decide on a course of action, they're hard to divert.
+  Externally Validated: Though private, they might measure success based on external benchmarks.
+  Pragmatic Theorists: While they enjoy theories, they focus on those that have practical implications.
+  Boundary Setters: Clear about their limits and the limits they set for others.
+description_x_left: |
+  Exploratory: They tend to roam through multiple ideas without needing to finalize or implement them.
+  Open-ended Thinking: INTPs might start various projects without finishing them because they're attracted to the initial exploration.
+  Adaptable: They're more go-with-the-flow and can change direction based on new insights.
+  Unstructured: They may not always have a clear plan and might procrastinate.
+  Skeptical: They frequently question and challenge, sometimes for the sake of understanding.
+  Spontaneous Insight: Might have sudden "eureka" moments after mulling over problems.
+  Less Concerned with Efficiency: More interested in understanding than optimizing.
+  Internal Validation: Less concerned with external benchmarks, and more with personal satisfaction.
+  Theoretical: Tend to enjoy pondering and discussing abstract concepts without needing practical application.
+  Less Goal-Oriented: Their process of exploration can sometimes be more important than achieving a set goal.
+num_questions: 10

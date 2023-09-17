@@ -1,106 +1,113 @@
 # AutoTest
 
-This project is a test generator that uses OpenAI's GPT-4 model to create a test with a set of questions. The test output is a spectrum on one x-axis, represented by two opposing concepts. The user's responses to the questions determine where they land on this spectrum. Once the test is generated a huggingface space with the test is generated where i.e. it will be publicly available and you can share the test with others or do whatever you want with it.
+AutoTest is a test generator leveraging OpenAI's GPT-4 model. With it, you can create a test that presents users with a set of questions. Based on their answers, users are positioned on a spectrum defined by two opposing concepts. Following the test creation, a Hugging Face space is automatically generated, allowing you to share and distribute your test.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Follow these steps to set up AutoTest on your local machine.
 
 ### Prerequisites
 
-You need to have Python installed on your machine. You can download Python here.
+Ensure you have Python installed. [Download Python here](https://www.python.org/downloads/).
 
-### Installing
+### Installation
 
-1. Clone the repository to your local machine.
-2. Install the required packages using pip:
+1. **Clone the Repository**: 
 
-```sh
-pip install -r requirements.txt
-```
+   ```
+   git clone <repository_link>
+   ```
 
-### Usage
+2. **Install Required Packages**:
 
-1. Set up your environment variables. You need to provide your OpenAI API key and Hugging Face token. You can do this in a .env file:
+   ```sh
+   pip install -r requirements.txt
+   ```
 
-```python
-OPENAI_API_KEY=your_openai_key
-HF_TOKEN=your_huggingface_token
-```
+### Configuration & Usage
 
-2. Run the main.py script with the name of your test as an argument:
+1. **Environment Variables**: Create a `.env` file in the root directory and provide your OpenAI API key and Hugging Face token:
 
-```python
-python main.py your_test_name
-```
+   ```ini
+   OPENAI_API_KEY=your_openai_key
+   HF_TOKEN=your_huggingface_token
+   ```
 
-3. The script will generate a test based on the configuration in auto_test_config.yaml. You can modify this file to customize your test.
+2. **Run the Script**: Use the following command to generate a test:
 
-4. The generated test will be deployed to Hugging Face Spaces. You can view it at https://huggingface.co/spaces/your_username/your_test_name.
+   ```sh
+   python main.py your_test_name.yaml
+   ```
 
-## Example
+   *Replace `your_test_name.yaml` with the name of your YAML configuration file.*
 
-Following a step by step approach for how it would like if you would create a test by yourself. For creating a test everything whats necessary to fill out is the scaffold of a yaml file. examples of such .yaml files can be found in the `example_tests` directory.
+3. **Customization**: Adjust `auto_test_config.yaml` to modify test parameters.
 
-1. Start with creating a .yaml and give her any name you want. The best is if you just copy and paste a sample yaml file from `example_tests` into the root directory.
+4. **Access the Test**: Once generated, your test will be available at: `https://huggingface.co/spaces/your_username/your_test_name`
 
-1. In the next step give the test a name. The name should be representive for the test you wanna create. Lets say we choose the following test title:
+## Create a Test: Step-by-Step Guide
 
-```yaml
-title: "Effective Accelerationism vs. Effective Decelerationism"
-```
+To create a custom test:
 
-2. In the next step the dimensions of the test need to be set. For now the only possible option to set is `1`:
+1. **Set Up Configuration File**:
+   - Create a `.yaml` file or use a sample from the `example_tests` directory.
+   - Adjust configurations as per your requirements.
 
-```yaml
-dimensions: 1
-```
+2. **Test Title**:
+   
+   ```yaml
+   title: "Effective Accelerationism vs. Effective Decelerationism"
+   ```
 
-I.e. the test exists of results which can be mapped on one x-axis i.e. it exist two possible outputs. later at 🧪AutoTest we plan to support also with two and N dimensions, so stay tuned for this!
+3. **Dimensions**:
 
-3. In the next step you need to define the the name of each x-axis end. In our case we choose the left end of the x-axis to be named Effective Decelerationism and the right end Effective Accelerationism:
+   ```yaml
+   dimensions: 1
+   ```
 
-```yaml
-x_left: "Effective Decelerationism"
-x_right: "Effective Accelerationism"
-```
+   *Note: Only single dimensional tests are supported currently. Multi-dimensional support is in the pipeline.*
 
-4. in the next step step it is necessary to provide the description for the test. The logic here is that the description needs to be provided for both ends of the axis. first the description for the right side:
+4. **Define Axis Ends**:
 
-```yaml
-description_x_right: |
-  Accelerationism is simply the self-awareness of capitalism, which has scarcely begun. ("We haven't seen anything yet.")
-  
-  1. The overarching goal for humanity is to preserve the light of consciousness.
-  2. Technology and market forces (technocapital) are accelerating in their power and abilities.
-  3. This force cannot be stopped.
-  4. Technocapital can usher in the next evolution of consciousness, creating unthinkable next-generation lifeforms and silicon-based awareness.
-  5. New forms of consciousness by definition will make sentience more varied and durable. We want this.
-  6. Technology is leverage. As it advances, it becomes easier to extinquish all conscious life in our corner of the universe.
-  Attempting to stall progress isn't risk free.
-  7. Society and the individual's context within it are rapidly changing, which leads to greater societal instability and mind viruses. (deterritorialisation and reterritorialisation).
-  8. Those who are the first to usher in and control the hyper-parameters of AI/technocapital have immense agency over the future of consciousness.
-  9. HUMANS HAVE AGENCY RIGHT NOW. WE CAN AFFECT THE ADVENT OF THE INFLECTION IN THIS PROCESS.
-  10. Effective Accelerationism, e/acc, is a set of ideas and practices that seek to maximize the probability of the technocapital singularity, and subsequently, the ability for emergent consciousness to flourish. There is much work to be done in defining cause areas, motivations, and philosophy. Please join us on #eacc twitter, and let's work towards a hundred trillion meta-organisms flourishing in the galaxy.
-```
+   ```yaml
+   x_left: "Effective Decelerationism"
+   x_right: "Effective Accelerationism"
+   ```
 
-and than for the left site. in the case the left side is just the opposite what is mostly the case for one dimensional tests than you have to do the following:
+5. **Provide Descriptions**:
 
-```yaml
-description_x_left: |
-  the opposite
-```
+   For the right end:
 
-if you want to add more context you can do this but keep it short similar to the `description_x_right` example. see the examples in `example_tests` for that.
+   ```yaml
+   description_x_right: |
+     Accelerationism is simply...
+     ...
+     ... a hundred trillion meta-organisms flourishing in the galaxy.
+   ```
 
-5. The last configuration step is to set the number of questions. this can be a number between 10 and 50 both numbers inclusive. this setting defines of how many questions the test will exist off. In the following example we set this number to 30:
+   For the left end (if it's the opposite):
 
-```yaml
-num_questions: 30
-```
+   ```yaml
+   description_x_left: |
+     the opposite
+   ```
 
-Alright now everything is defined and the app for creating the test is ready to be called. You need to call the python script together with the name of your yaml file you just created. in this example we are calling the yaml file `accelerationism_vs_decelerationism.yaml` so we are going to run the following command:
+   *For more detailed descriptions, refer to `example_tests`.*
 
-`python main.py accelerationism_vs_decelerationism.yaml`
+6. **Set Number of Questions**:
 
-It takes up to a few minutes until the test is created but once the test is done and deployed you see a link to the hugginface space for the link. you can use this test now to embedd it on your website or just share it like it is to your friends. 
+   ```yaml
+   num_questions: 30
+   ```
+
+   *You can choose any number between 10 and 50.*
+
+7. **Generate the Test**:
+
+   Run the script with your YAML file:
+
+   ```sh
+   python main.py your_file_name.yaml
+   ```
+
+   Upon successful creation, a link to the Hugging Face space will be displayed.

@@ -98,4 +98,4 @@ Here's how to craft your custom test:
 - [INTP vs. INTJ](https://huggingface.co/spaces/yachty66/j3l1ENYk2VOqzhx1bmWHEvMt6LWyjP?logs=build)
 
 **Want to see PersAI📋 in action?**  
-🎥 [Watch the DEMO!](https://www.loom.com/share/f75ff52e1216410b8089399934153dd3)
+🎥 [Watch the DEMO!](https://x.com/MaxHager66/status/1703228131241292252?s=20)

@@ -1,6 +1,6 @@
-# AutoTest🧪
+# PersAI📋
 
-AutoTest is a test generator leveraging OpenAI's GPT-4 model. With it, you can create a test that presents users with a set of questions. Based on their answers, users are positioned on a spectrum defined by two opposing concepts. Following the test creation, a Hugging Face space is automatically generated, allowing you to share and distribute your test. It's an innovative way to gauge opinions and positions in a fun, interactive manner! 🎉
+PersAI📋 is a test generator agent. With it, you can create a test that presents users with a set of questions. Based on their answers, users are positioned on a spectrum defined by two opposing concepts. Following the test creation, a Hugging Face space is automatically generated, allowing you to share and distribute your test.
 
 ## 🛠 Getting Started
 
@@ -8,14 +8,14 @@ Follow these steps to set up AutoTest on your local machine.
 
 ### 📌 Prerequisites
 
-Ensure you have Python🐍 installed. [Download Python here](https://www.python.org/downloads/).
+Ensure you have Python🐍 installed. 
 
 ### 🔧 Installation
 
 1. **Clone the Repository**: 
 
    ```
-   git clone <repository_link>
+   git clone https://github.com/yachty66/AutoTest.git
    ```
 
 2. **Install Required Packages**:
@@ -43,7 +43,7 @@ Ensure you have Python🐍 installed. [Download Python here](https://www.python.
 
 3. **Customization**: Adjust `auto_test_config.yaml` to modify test parameters.
 
-4. **Access the Test**: Once generated, your test will be available at: `https://huggingface.co/spaces/your_username/your_test_name`
+4. **Access the Test**: Once generated, your test will be available at: `https://huggingface.co/spaces/your_username/`
 
 ## ✏ Create a Test: Step-by-Step Guide
 
@@ -112,6 +112,13 @@ To create a custom test:
 
    Upon successful creation, a link to the Hugging Face space will be displayed.
 
----
+### todo example spaces + demonstration video 
 
-Emojis can add a touch of fun to documents and make them more engaging. However, it's important not to overdo it to ensure the content remains professional and easy to read.
+Effective Accelerationism vs. Effective Decelerationism --> https://huggingface.co/spaces/yachty66/XSLAYdGsVMD5NbU2jQQdKeEkQJOMxm
+
+Capitalism vs. Communism --> https://huggingface.co/spaces/yachty66/ZcXPB8U5MhGHOVhJF2ipGix5X40CgU?logs=build
+
+INTP vs. INTJ --> https://huggingface.co/spaces/yachty66/j3l1ENYk2VOqzhx1bmWHEvMt6LWyjP?logs=build
+
+
+DEMONSTRATION VIDEO!    

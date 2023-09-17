@@ -42,7 +42,7 @@ def load_config(config_file):
         args = yaml.safe_load(f)
     if args['dimensions'] == 2 or args['dimensions'] == 3:
         raise ValueError("This functionality is not implemented yet but stay tuned for future updates")
-    if not 1 <= args['num_questions'] <= 50:
+    if not 10 <= args['num_questions'] <= 50:
         raise ValueError("Number of questions must be between 10 and 50")
     title = args["title"]
     description_x_right = args["description_x_right"]

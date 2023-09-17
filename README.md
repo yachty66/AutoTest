@@ -40,19 +40,25 @@ python main.py your_test_name
 
 ## Example
 
-Following a step by step approach for how it would like if you would create a test by yourself. For creating a test everything whats necessary to fill out is the scaffold of the yaml file `auto_test_config.yaml`. the better the scaffold the better the resulting test will be.
+Following a step by step approach for how it would like if you would create a test by yourself. For creating a test everything whats necessary to fill out is the scaffold of a yaml file. examples of such .yaml files can be found in the `example_tests` directory.
 
-1. First you need to give the test a name. The name should be representive for the test you wanna create. Lets say we choose the following test title:
+1. Start with creating a .yaml and give her any name you want. The best is if you just copy and paste a sample yaml file from `example_tests` into the root directory.
 
-`title: "Effective Accelerationism vs. Effective Decelerationism"`
+1. In the next step give the test a name. The name should be representive for the test you wanna create. Lets say we choose the following test title:
+
+```yaml
+title: "Effective Accelerationism vs. Effective Decelerationism"
+```
 
 2. In the next step the dimensions of the test need to be set. For now the only possible option to set is `1`:
 
-`dimensions: 1`
+```yaml
+dimensions: 1
+```
 
 I.e. the test exists of results which can be mapped on one x-axis i.e. it exist two possible outputs. later at 🧪AutoTest we plan to support also with two and N dimensions, so stay tuned for this!
 
-3. In the next step you need to define the the name of each x_axis end. In our case we choose the left end of the x-axis to be named Effective Decelerationism and the right end Effective Accelerationism:
+3. In the next step you need to define the the name of each x-axis end. In our case we choose the left end of the x-axis to be named Effective Decelerationism and the right end Effective Accelerationism:
 
 ```yaml
 x_left: "Effective Decelerationism"
@@ -85,7 +91,7 @@ description_x_left: |
   the opposite
 ```
 
-if you want to add more context you can do this but keep it short similar to the `description_x_right` example. 
+if you want to add more context you can do this but keep it short similar to the `description_x_right` example. see the examples in `example_tests` for that.
 
 5. The last configuration step is to set the number of questions. this can be a number between 10 and 50 both numbers inclusive. this setting defines of how many questions the test will exist off. In the following example we set this number to 30:
 

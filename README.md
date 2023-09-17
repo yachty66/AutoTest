@@ -1,124 +1,101 @@
 # PersAI📋
 
-PersAI📋 is a test generator agent. With it, you can create a test that presents users with a set of questions. Based on their answers, users are positioned on a spectrum defined by two opposing concepts. Following the test creation, a Hugging Face space is automatically generated, allowing you to share and distribute your test.
+PersAI📋 is your AI-powered test generation agent. Craft tests that probe users with a series of questions and, based on their responses, place them on a spectrum between two contrasting concepts. Upon test creation, a Hugging Face space is seamlessly generated, allowing for easy sharing and distribution.
 
 ## 🛠 Getting Started
 
-Follow these steps to set up AutoTest on your local machine.
+Here's a quick guide to get PersAI📋 up and running on your local setup.
 
 ### 📌 Prerequisites
 
-Ensure you have Python🐍 installed. 
+- Python🐍: Ensure you have it installed on your machine.
 
 ### 🔧 Installation
 
 1. **Clone the Repository**: 
-
    ```
-   git clone https://github.com/yachty66/AutoTest.git
+   git clone https://github.com/yachty66/PersAI.git
    ```
 
-2. **Install Required Packages**:
-
+2. **Install Dependencies**:
    ```sh
    pip install -r requirements.txt
    ```
 
 ### ⚙ Configuration & Usage
 
-1. **Environment Variables**: Create a `.env` file in the root directory and provide your OpenAI API key and Hugging Face token:
-
+1. **Environment Variables**: Set up a `.env` file in the root directory with your OpenAI API key and Hugging Face token:
    ```ini
    OPENAI_API_KEY=your_openai_key
    HF_TOKEN=your_huggingface_token
    ```
 
-2. **Run the Script**: Use the following command to generate a test:
-
+2. **Run the Script**: 
    ```sh
    python main.py your_test_name.yaml
    ```
+   *Remember to replace `your_test_name.yaml` with your specific YAML configuration filename.*
 
-   *Replace `your_test_name.yaml` with the name of your YAML configuration file.*
+3. **Access Your Test**: Post-creation, find your test at: `https://huggingface.co/spaces/your_username/`
 
-3. **Customization**: Adjust `auto_test_config.yaml` to modify test parameters.
+## ✏ Create a Test: A Step-by-Step Guide
 
-4. **Access the Test**: Once generated, your test will be available at: `https://huggingface.co/spaces/your_username/`
+Here's how to craft your custom test:
 
-## ✏ Create a Test: Step-by-Step Guide
+1. **Setup**: Either use a `.yaml` sample from `example_tests` or craft a new one. Modify configurations as needed.
 
-To create a custom test:
-
-1. **Set Up Configuration File**:
-   - Create a `.yaml` file or use a sample from the `example_tests` directory.
-   - Adjust configurations as per your requirements.
-
-2. **Test Title**:
-   
+2. **Title Your Test**: 
    ```yaml
    title: "Effective Accelerationism vs. Effective Decelerationism"
    ```
 
 3. **Dimensions**:
-
    ```yaml
    dimensions: 1
    ```
+   *Presently, only one-dimensional tests are supported. Multi-dimensional functionality is in the works.*
 
-   *Note: Only single dimensional tests are supported currently. Multi-dimensional support is in the pipeline.*
-
-4. **Define Axis Ends**:
-
+4. **Label Your Axes**: 
    ```yaml
    x_left: "Effective Decelerationism"
    x_right: "Effective Accelerationism"
    ```
 
-5. **Provide Descriptions**:
+5. **Provide Descriptive Content**:
 
    For the right end:
-
    ```yaml
    description_x_right: |
      Accelerationism is simply...
      ...
-     ... a hundred trillion meta-organisms flourishing in the galaxy.
+     ... meta-organisms flourishing in the galaxy.
    ```
 
-   For the left end (if it's the opposite):
-
+   For the left end (if opposite):
    ```yaml
    description_x_left: |
      the opposite
    ```
+   *For nuanced descriptions, peek at the `example_tests`.*
 
-   *For more detailed descriptions, refer to `example_tests`.*
-
-6. **Set Number of Questions**:
-
+6. **Determine Question Count**: 
    ```yaml
    num_questions: 30
    ```
+   *Pick any number from 10 to 50.*
 
-   *You can choose any number between 10 and 50.*
-
-7. **Generate the Test**:
-
-   Run the script with your YAML file:
-
+7. **Generate!**: 
    ```sh
    python main.py your_file_name.yaml
    ```
+   Once created, you'll be provided with a Hugging Face space link.
 
-   Upon successful creation, a link to the Hugging Face space will be displayed.
+### Sample Tests & Demonstration 
 
-### todo example spaces + demonstration video 
+**Check out these test spaces**:
+- [Effective Accelerationism vs. Effective Decelerationism](https://huggingface.co/spaces/yachty66/XSLAYdGsVMD5NbU2jQQdKeEkQJOMxm)
+- [Capitalism vs. Communism](https://huggingface.co/spaces/yachty66/ZcXPB8U5MhGHOVhJF2ipGix5X40CgU?logs=build)
+- [INTP vs. INTJ](https://huggingface.co/spaces/yachty66/j3l1ENYk2VOqzhx1bmWHEvMt6LWyjP?logs=build)
 
-Effective Accelerationism vs. Effective Decelerationism --> https://huggingface.co/spaces/yachty66/XSLAYdGsVMD5NbU2jQQdKeEkQJOMxm
-
-Capitalism vs. Communism --> https://huggingface.co/spaces/yachty66/ZcXPB8U5MhGHOVhJF2ipGix5X40CgU?logs=build
-
-INTP vs. INTJ --> https://huggingface.co/spaces/yachty66/j3l1ENYk2VOqzhx1bmWHEvMt6LWyjP?logs=build
-
-
-DEMONSTRATION VIDEO!    
+**Want to see PersAI📋 in action?**  
+🎥 [Watch the DEMO!](https://www.loom.com/share/f75ff52e1216410b8089399934153dd3)

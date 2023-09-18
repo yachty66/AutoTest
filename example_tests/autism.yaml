@@ -1,0 +1,9 @@
+title: "Autism Spectrum"
+dimensions: 1
+x_left: "No Autism"
+x_right: "Autism"
+description_x_right: |
+  Autism
+description_x_left: |
+  No autism
+num_questions: 30

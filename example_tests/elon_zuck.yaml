@@ -1,0 +1,9 @@
+title: "Elon/Zuck Test"
+dimensions: 1
+x_right: "Elon Musk"
+x_left: "Marck Zuckerberg"
+description_x_right: |
+  Someone agreeing with this kind of question is more of an supporter for Elon Musk.
+description_x_left: |
+  Someone agreeing with this kind of question is more of an supporter for Marck Zuckerberg.
+num_questions: 20

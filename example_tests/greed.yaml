@@ -1,0 +1,9 @@
+title: "Greed Test"
+dimensions: 1
+x_right: "Greedy"
+x_left: "Not Greedy"
+description_x_right: |
+  Greedy
+description_x_left: |
+  Opposite of Greedy
+num_questions: 20

@@ -14,7 +14,7 @@ Here's a quick guide to get PersAI📋 up and running on your local setup.
 
 1. **Clone the Repository**: 
    ```
-   git clone https://github.com/yachty66/PersAI.git
+   git clone https://github.com/yachty66/AutoTest.git
    ```
 
 2. **Install Dependencies**:
